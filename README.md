@@ -37,5 +37,9 @@ This script does some cleanup on all filenames in the (current) directory, it:
 - removes leading, duplicate, and trailing spaces
 `> ./nicer.fish [directory|file]`
 
+### Recommended Workflow
+- for movies: `flatten`, then `nicer`.
+- for series: `flatten`, `renamer`, then `nicer`.
+
 ## DISCLAIMER
 Although all scripts should be quite safe to use, you should probably do a dry run on some of your files first (by commenting out the `mv`-line). I won't restore your old file names or be held responsible in any other way occurring from the use of these scripts.
