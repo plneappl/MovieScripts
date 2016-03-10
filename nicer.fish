@@ -63,12 +63,11 @@ for i in $searchIn
     echo '------------'
   
     #do it
-    #mv $i $destination
+    mv $i $destination
   else 
     echo "Something went wrong... We didn't process"
     echo $fn 
     echo "because we deleted the name (whoops!)"
     echo '------------'
   end
-  exit
 end
