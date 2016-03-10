@@ -2,6 +2,9 @@
 Some fish-scripts for managing your movie/series-library. Flattening, recovering names, and cleaning file names.
 
 ## Usage
+You will need the fish-shell (or a compatible one, or port everything to your favourite shell). Fish is available here:
+[Fishshell.com](http://fishshell.com/)
+
 ### Flatten
 This script flattens the (current) directory, i.e. pulls all movies down.
 `> ./flatten.fish [directory]`
