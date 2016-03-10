@@ -20,14 +20,14 @@ end
 
 #all keywords to delete, case insensitive, spaces instead of [._-]
 set deletions              german dubbed x264 bluray web ac3 ac3md rip dts hd readnfo multi 'dd5 1' 'h 264' h264 dub '\(1\)' 
-set deletions $deletions   wmv dvd ts 'blu ray' dd51 'aac2 0' aac avc remux xvid tv avi mp4 'dd2 0' 'read nfo' internal
+set deletions $deletions   wmv dvd ts 'blu ray' dd51 'aac2 0' aac avc remux xvid tv avi mp4 'dd2 0' 'read nfo' internal ituneshd
 
 set deletionChars          '\(' '\)' '\[' '\]'
 
 for i in $searchIn
   set fn (basename $i)
-  set extension '.'(echo $fn | sed -e 's:.*\.::')
-  set name ' '(echo $fn | sed -e 's:\..*::')' '
+  set extension '.'(echo $fn | sed -e 's:^.*\.::')
+  set name ' '(echo $fn | sed -e 's:\.[^\.]*$::')' '
   
   #replace dots, dashes and underscores
   set nicerName (echo $name | sed -r 's:\.: :g' | sed -r 's:-: :g' | sed -r 's:_: :g')
@@ -63,11 +63,12 @@ for i in $searchIn
     echo '------------'
   
     #do it
-    mv $i $destination
+    #mv $i $destination
   else 
     echo "Something went wrong... We didn't process"
     echo $fn 
     echo "because we deleted the name (whoops!)"
     echo '------------'
   end
+  exit
 end
