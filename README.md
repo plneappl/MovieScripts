@@ -35,6 +35,7 @@ This script does some cleanup on all filenames in the (current) directory, it:
 - removes some whatever keywords
 - removes braces
 - removes leading, duplicate, and trailing spaces
+- capitalizes all words
 `> ./nicer.fish [directory|file]`
 
 ### Recommended Workflow

@@ -21,6 +21,7 @@ end
 #all keywords to delete, case insensitive, spaces instead of [._-]
 set deletions              german dubbed x264 bluray web ac3 ac3md rip dts hd readnfo multi 'dd5 1' 'h 264' h264 dub '\(1\)' 
 set deletions $deletions   wmv dvd ts 'blu ray' dd51 'aac2 0' aac avc remux xvid tv avi mp4 'dd2 0' 'read nfo' internal ituneshd
+set deletions $deletions   dvdrip hdtv repack
 
 set deletionChars          '\(' '\)' '\[' '\]'
 
@@ -45,7 +46,7 @@ for i in $searchIn
   end
 
   #uppercase each word
-  #set nicerName (echo $nicerName | sed -r 's/\<./\U&/g')
+  set nicerName (echo $nicerName | sed -r 's/\<./\U&/g')
 
   #remove all duplicate space
   set nicerName (echo $nicerName | sed -r 's: +: :g')
