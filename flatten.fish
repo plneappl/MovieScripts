@@ -1,20 +1,39 @@
 #!/bin/fish
 function flatten
-  if [ $argv ]
-    if [ (count $argv) != 1 ]           #check for only one argument
-      exit
-    else if [ -d $argv ]                #for directories, we process each file inside
-      set searchIn $argv/**.mkv $argv/**.avi $argv/**.ts $argv/**.m4v
-      set searchPath $argv
-    else                                #is there some other case? file not found or something...  We Don't accept single files.
-      exit
+  for a in $argv
+    if [ -d $a ]                #for directories, we process each file inside
+      echo $a is dir
+      set searchPath $a
+    else if [ $a = '-c' ]
+      set copyName '1'
     end
-  else                                  #no arguments ==> just use base path
-    set searchIn **.mkv **.avi **.ts **.m4v
+  end
+  if [ ! $searchPath ]                                  #no arguments ==> just use base path
     set searchPath .
   end
-  
+  set searchIn $searchPath/*/**.mkv $searchPath/*/**.avi $searchPath/*/**.ts $searchPath/*/**.m4v
+
+
   for i in $searchIn
-    mv $i $searchPath/
+    if [ ! -f $i ]
+      continue
+    end
+    set fn (basename $i)
+    set extension '.'(echo $fn | sed -e 's:^.*\.::')
+    set name (echo $fn | sed -e 's:\.[^\.]*$::')
+    
+    if [ $copyName ]
+      set basedir (basename (dirname $i))
+      set name $name.$basedir	
+    end
+
+    set destName $name$extension
+    set dest $searchPath/$destName
+#    echo $dest
+    if [ -f $dest ]
+      echo file already exists: $dest
+      continue
+    end
+    mv $i $dest
   end
 end

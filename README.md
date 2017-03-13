@@ -7,7 +7,10 @@ You will need the fish-shell (or a compatible one, or port everything to your fa
 
 ### Flatten
 This script flattens the (current) directory, i.e. pulls all movies down.
-`> ./flatten.fish [directory]`
+The optional ```-c``` flag indicates that names should be copied from the
+next-most directory. So ```flatten -c /a/``` with file ```/a/b/c/d.mkv``` would move the file to
+```/a/c.mkv```.
+`> ./flatten.fish [-c] [directory]`
 
 ### Renamer
 This script tries to guess a better name for all files in the (current) directory by looking for folders with the same series identifier (i.e. S01E01).
