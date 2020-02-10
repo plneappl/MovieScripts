@@ -8,8 +8,8 @@ You will need the fish-shell (or a compatible one, or port everything to your fa
 ### Flatten
 This script flattens the (current) directory, i.e. pulls all movies down.
 The optional ```-c``` flag indicates that names should be copied from the
-next-most directory. So ```flatten -c /a/``` with file ```/a/b/c/d.mkv``` would move the file to
-```/a/c.mkv```.
+next-most directory. So ```flatten -c /a/``` with file ```/a/b/c/d.mkv``` would move the file to ```/a/c.mkv```.
+
 `> ./flatten.fish [-c] [directory]`
 
 ### Renamer
