@@ -20,7 +20,9 @@ function nicer
   #all keywords to delete, case insensitive, spaces instead of [._-]
   set deletions              german dubbed x264 bluray web ac3 ac3md rip dts hd readnfo multi 'dd5 1' 'h 264' h264 dub '\(1\)' 
   set deletions $deletions   wmv dvd ts 'blu ray' dd51 'aac2 0' aac avc remux xvid tv avi mp4 'dd2 0' 'read nfo' internal ituneshd
-  set deletions $deletions   dvdrip hdtv repack bdrip webrip proper by ger bd '7 1' uhd hdr x265 h265 webhd
+  set deletions $deletions   dvdrip hdtv repack bdrip webrip proper by ger bd 'ddp5 1' '7 1' '5 1' uhd x265 h265 webhd fs ws ma sub jap
+  set deletions $deletions   '2 0' anime hevc eac3d amazonuhd 'dd 51' amazn hdr10plus av1 opus eac3 netflixhd dv dsnp truehd atmos
+  set deletions $deletions   'DDPA5 1' ac3d untouched
   
   set deletionChars          '\(' '\)' '\[' '\]'
   
@@ -52,8 +54,24 @@ function nicer
     set nicerName (echo $nicerName | sed -r 's:\<.:\U&:g')
   
     #detect ID
-    set id       (echo $nicerName | sed -r 's:^.* s([0-9][0-9])e([0-9][0-9]) .*$: S\1E\2 :I')       #s01e01
-    set origId   (echo $nicerName | sed -r 's:^.* (s[0-9][0-9]e[0-9][0-9]) .*$: \1 :I')
+    set id       (echo $nicerName | sed -r 's:^.* ep ([0-9][0-9]) .*$: S01E\1 :I')
+    set origId   (echo $nicerName | sed -r 's:^.* (ep [0-9][0-9]) .*$: \1 :I')
+    if [ $id = $nicerName ]
+      set id     (echo $nicerName | sed -r 's:^.* season ([0-9]) e([0-9][0-9]) .*$: S0\1E\2 :I')       #season 1 e01
+      set origId (echo $nicerName | sed -r 's:^.* (season [0-9] e[0-9][0-9]) .*$: \1 :I')
+    end
+    if [ $id = $nicerName ]
+      set id     (echo $nicerName | sed -r 's:^.* s([0-9][0-9])e([0-9][0-9]) .*$: S\1E\2 :I')       #s01e01
+      set origId (echo $nicerName | sed -r 's:^.* (s[0-9][0-9]e[0-9][0-9]) .*$: \1 :I')
+    end
+    if [ $id = $nicerName ]
+      set id     (echo $nicerName | sed -r 's:^.* s([0-9][0-9]) e([0-9][0-9]) .*$: S\1E\2 :I')       #s01 e01
+      set origId (echo $nicerName | sed -r 's:^.* (s[0-9][0-9] e[0-9][0-9]) .*$: \1 :I')
+    end
+    if [ $id = $nicerName ]
+      set id     (echo $nicerName | sed -r 's:^.* ([0-9])x([0-9]{2}) .*$: S0\1E\2 :I')               #1x01
+      set origId (echo $nicerName | sed -r 's:^.* ([0-9]x[0-9]{2}) .*$: \1 :I')
+    end
     if [ $id = $nicerName ]
       set id     (echo $nicerName | sed -r 's:^.* ([0-9])([0-9]{2}) .*$: S0\1E\2 :I')               #101
       set origId (echo $nicerName | sed -r 's:^.* ([0-9])([0-9]{2}) .*$: \1\2 :I')
@@ -64,7 +82,7 @@ function nicer
     #end
     if [ $id = $nicerName ]
       echo "ID couldn't be detected"
-    else
+    else if test ! "$origId" = "$id"
       echo '"'$origId'" -> "'$id'"'
     end
   
@@ -79,8 +97,13 @@ function nicer
     set nicerName (echo $nicerName | sed -r 's: +$::')
   
     set destination $searchPath/$nicerName$extension
-  
-    if [ $nicerName ]
+ 
+    if [ "' $nicerName '" = "'$name'" ]
+      # do nothing
+      echo '> unchanged'
+      echo '------------'
+
+    else if [ $nicerName ]
       #what we are going to do
       echo $nicerName$extension
       echo '------------'

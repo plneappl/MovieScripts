@@ -13,12 +13,10 @@ function flatten
   if [ ! $searchPath ]                                  #no arguments ==> just use base path
     set searchPath .
   end
-  set extensions .mkv .avi .ts .m4v .mp3 .mp4 .jpg .mpg .srr .wmv .nzb
+  set extensions .mkv .avi .ts .m4v .mp3 .mp4 .jpg .mpg .srr .wmv .nzb .png .gif .webm .mov
   for ext in $extensions
     set searchIn $searchIn $searchPath/*/**$ext
   end
-#   set searchIn $searchPath/*/**.mkv $searchPath/*/**.avi $searchPath/*/**.ts $searchPath/*/**.m4v $searchPath/*/**.mp3 $searchPath/*/**.mp4
-
 
   for i in $searchIn
     if [ ! -f $i ]
