@@ -49,6 +49,7 @@ function renamer
     set destination $argv/$fullName$extension
     echo $i
     echo $id
+    echo $destination
     echo $fullName$extension
     echo '------------'
     if [ $destination ]

@@ -18,13 +18,27 @@ function nicer
   end
     
   #all keywords to delete, case insensitive, spaces instead of [._-]
-  set deletions              german dubbed x264 bluray web ac3 ac3md rip dts hd readnfo multi 'dd5 1' 'h 264' h264 dub '\(1\)' 
+  set firstDel               german
+  set deletions              dubbed x264 bluray web ac3 ac3md rip dts hd readnfo multi 'dd5 1' 'h 264' h264 dub '\(1\)' 
   set deletions $deletions   wmv dvd ts 'blu ray' dd51 'aac2 0' aac avc remux xvid tv avi mp4 'dd2 0' 'read nfo' internal ituneshd
   set deletions $deletions   dvdrip hdtv repack bdrip webrip proper by ger bd 'ddp5 1' '7 1' '5 1' uhd x265 h265 webhd fs ws ma sub jap
-  set deletions $deletions   '2 0' anime hevc eac3d amazonuhd 'dd 51' amazn hdr10plus av1 opus eac3 netflixhd dv dsnp truehd atmos
-  set deletions $deletions   'DDPA5 1' ac3d untouched
+  set deletions $deletions   '2 0' anime hevc eac3d amazonuhd 'dd 51' amazn av1 opus eac3 netflixhd dv dsnp truehd atmos
+  set deletions $deletions   'DDPA5 1' ac3d untouched amzn webuhd sdr 'ddplus 51' xxx mkv hls hybrid hlg max global msubs 'h 265'
+  set deletions $deletions   subbed
+
+  set sedDel "(\b$firstDel\b)"
+  for del in $deletions
+    set sedDel "$sedDel|(\b$del\b)"
+  end
+
+  set replacements           hdr10plus,HDR dl,DL
   
-  set deletionChars          '\(' '\)' '\[' '\]'
+  set firstDeletionChar      '\('
+  set deletionChars          '\)' '\[' '\]' "'" ';' '/' '¡' '¦'
+  set sedDelChars "($firstDeletionChar)"
+  for del in $deletionChars
+    set sedDelChars "$sedDelChars|($del)"
+  end
   
   for i in $searchIn
     if [ ! -f $i ]
@@ -32,23 +46,22 @@ function nicer
     end
     set fn (basename $i)
     echo $fn
-    set extension '.'(echo $fn | sed -e 's:^.*\.::')
+    set extension '.'(echo $fn | sed -e 's:^.*\.::' | tr '[:upper:]' '[:lower:]')
     set name ' '(echo $fn | sed -e 's:\.[^\.]*$::')' '
-    
+        
     #replace dots, dashes and underscores
-    set nicerName (echo $name | sed -r 's:\.: :g' | sed -r 's:-: :g' | sed -r 's:_: :g')
-  
+    set nicerName (echo $name | sed -E 's:[._–,-]+: :gI')
   
     #remove all keywords
-    for del in $deletions 
-      #echo $del 
-      set nicerName (echo $nicerName | sed -r "s: $del :  :gI")
+    set nicerName (echo $nicerName | sed -E "s:$sedDel: :gI")
+
+    for e in $replacements
+      echo $e | read -d , s_from s_to
+      set nicerName (echo $nicerName | sed -r "s: $s_from : $s_to :gI")
     end
   
     #some special chars
-    for del in $deletionChars
-      set nicerName (echo $nicerName | sed -r "s:$del::gI")
-    end
+    set nicerName (echo $nicerName | sed -E "s:$sedDelChars::gI")
   
     #uppercase each word
     set nicerName (echo $nicerName | sed -r 's:\<.:\U&:g')
@@ -72,14 +85,6 @@ function nicer
       set id     (echo $nicerName | sed -r 's:^.* ([0-9])x([0-9]{2}) .*$: S0\1E\2 :I')               #1x01
       set origId (echo $nicerName | sed -r 's:^.* ([0-9]x[0-9]{2}) .*$: \1 :I')
     end
-    if [ $id = $nicerName ]
-      set id     (echo $nicerName | sed -r 's:^.* ([0-9])([0-9]{2}) .*$: S0\1E\2 :I')               #101
-      set origId (echo $nicerName | sed -r 's:^.* ([0-9])([0-9]{2}) .*$: \1\2 :I')
-    end
-    #if [ $id = $nicerName ]
-    #  set id     (echo $nicerName | sed -r 's:^.* ([0-9]{2})([0-9]{2}) .*$: S\1E\2 :I')             #1001
-    #  set origId (echo $nicerName | sed -r 's:^.* ([0-9]{2})([0-9]{2}) .*$: \1\2 :I')
-    #end
     if [ $id = $nicerName ]
       echo "ID couldn't be detected"
     else if test ! "$origId" = "$id"
@@ -109,7 +114,13 @@ function nicer
       echo '------------'
     
       #do it
-      mv $i $destination
+      if [ (echo "' $nicerName '" | tr '[:upper:]' '[:lower:]') = (echo "'$name'" | tr '[:upper:]' '[:lower:]') ]
+        set destination2 $searchPath/_$nicerName$extension
+        mv -n $i $destination2
+        mv -n $destination2 $destination
+      else
+        mv -n $i $destination
+      end    
     else 
       echo "Something went wrong... We didn't rename the file because we would have renamed it to $nicerName (whoops!)"
       echo '------------'
